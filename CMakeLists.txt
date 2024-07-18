@@ -8,13 +8,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+set(SDL_SHARED OFF)
+set(SDL_STATIC ON)
 add_subdirectory("lib/SDL")
 add_subdirectory("lib/glm")
 
 file(GLOB IMGUI_SOURCES
   "lib/imgui/*.cpp"
-  "lib/imgui/backends/imgui_impl_opengl3.cpp"
   "lib/imgui/backends/imgui_impl_sdl3.cpp"
+  "lib/imgui/backends/imgui_impl_sdlrenderer3.cpp"
 )
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PUBLIC "lib/imgui" "lib/SDL/include")
