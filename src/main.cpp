@@ -19,9 +19,6 @@ int main(void)
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
     window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    int x, y;
-    SDL_GetWindowPosition(window, &x, &y);
-    SDL_SetWindowPosition(window, x + 500, y);
     renderer = SDL_CreateRenderer(window, "opengl");
     SDL_SetRenderVSync(renderer, true);
 
