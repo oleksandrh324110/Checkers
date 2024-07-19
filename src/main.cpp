@@ -66,8 +66,8 @@ int main(void)
                     running = false;
                 ImGui::EndMenu();
             }
-            ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+            ImGui::SameLine(ImGui::GetWindowWidth() - 90);
+            ImGui::Text("FPS: %.0f", ImGui::GetIO().Framerate);
             ImGui::EndMainMenuBar();
         }
 
