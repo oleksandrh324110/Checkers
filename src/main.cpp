@@ -13,6 +13,7 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 bool running = true;
 bool dark_mode = true;
+bool vsync = true;
 
 int main(void)
 {
@@ -20,15 +21,12 @@ int main(void)
 
     window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, "opengl");
-    SDL_SetRenderVSync(renderer, true);
+    SDL_SetRenderVSync(renderer, vsync);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
-
-    dark_mode ? ImGui::StyleColorsDark()
-              : ImGui::StyleColorsLight();
 
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
@@ -45,15 +43,17 @@ int main(void)
                     running = false;
                 else if (event.key.key == SDLK_D)
                     dark_mode = !dark_mode;
+                else if (event.key.key = SDLK_V)
+                    vsync = !vsync;
                 break;
             }
             ImGui_ImplSDL3_ProcessEvent(&event);
         }
 
-        if (dark_mode)
-            ImGui::StyleColorsDark();
-        else
-            ImGui::StyleColorsLight();
+        dark_mode ? ImGui::StyleColorsDark()
+                  : ImGui::StyleColorsLight();
+
+        SDL_SetRenderVSync(renderer, vsync);
 
         ImGui_ImplSDL3_NewFrame();
         ImGui_ImplSDLRenderer3_NewFrame();
@@ -63,10 +63,14 @@ int main(void)
             if (ImGui::BeginMenu("App")) {
                 if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "D"))
                     dark_mode = !dark_mode;
+                if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "V"))
+                    vsync = !vsync;
                 if (ImGui::MenuItem("Exit", "Q"))
                     running = false;
                 ImGui::EndMenu();
             }
+            ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
             ImGui::EndMainMenuBar();
         }
 
