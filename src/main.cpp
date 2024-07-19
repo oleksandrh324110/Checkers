@@ -9,8 +9,6 @@
 #include <imgui_impl_sdl3.h>
 #include <imgui_impl_sdlrenderer3.h>
 
-SDL_Window *window;
-SDL_Renderer *renderer;
 bool running = true;
 bool dark_mode = true;
 bool vsync = true;
@@ -19,9 +17,8 @@ int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    renderer = SDL_CreateRenderer(window, "opengl");
-    SDL_SetRenderVSync(renderer, vsync);
+    SDL_Window *window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, "opengl");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
