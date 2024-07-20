@@ -10,11 +10,23 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
 
-bool running = true;
 bool dark_mode = true;
 bool vsync = true;
 
-int main(void)
+void toggleColorStyle()
+{
+    dark_mode = !dark_mode;
+    dark_mode ? ImGui::StyleColorsDark()
+              : ImGui::StyleColorsLight();
+}
+
+void toggleVSync(SDL_Renderer* renderer)
+{
+    vsync = !vsync;
+    SDL_RenderSetVSync(renderer, vsync);
+}
+
+int main(int argc, char* argv[])
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
@@ -29,6 +41,7 @@ int main(void)
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
 
+    bool running = true;
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -41,10 +54,10 @@ int main(void)
                 if (event.key.keysym.mod & KMOD_ALT)
                     switch (event.key.keysym.scancode) {
                     case SDL_SCANCODE_D:
-                        dark_mode = !dark_mode;
+                        toggleColorStyle();
                         break;
                     case SDL_SCANCODE_V:
-                        vsync = !vsync;
+                        toggleVSync(renderer);
                         break;
                     case SDL_SCANCODE_Q:
                         running = false;
@@ -53,11 +66,6 @@ int main(void)
             }
         }
 
-        dark_mode ? ImGui::StyleColorsDark()
-                  : ImGui::StyleColorsLight();
-
-        SDL_RenderSetVSync(renderer, vsync);
-
         ImGui_ImplSDL2_NewFrame();
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui::NewFrame();
@@ -65,9 +73,9 @@ int main(void)
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("App")) {
                 if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "Alt+D"))
-                    dark_mode = !dark_mode;
+                    toggleColorStyle();
                 if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "Alt+V"))
-                    vsync = !vsync;
+                    toggleVSync(renderer);
                 if (ImGui::MenuItem("Exit", "Alt+Q"))
                     running = false;
                 ImGui::EndMenu();

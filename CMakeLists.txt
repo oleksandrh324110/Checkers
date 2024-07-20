@@ -8,8 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(SDL_SHARED OFF)
-set(SDL_STATIC ON)
 add_subdirectory("lib/SDL")
 add_subdirectory("lib/glm")
 
@@ -24,4 +22,4 @@ include_directories("lib/imgui" "lib/imgui/backends")
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 add_executable(main "${SOURCES}")
-target_link_libraries(main SDL2::SDL2 glm::glm imgui)
+target_link_libraries(main SDL2-static SDL2main imgui glm)
