@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <SDL3/SDL_render.h>
 
 #include <imgui.h>
@@ -17,12 +18,12 @@ int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    SDL_Window *window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, "opengl");
+    SDL_Window* window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, "opengl");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
     (void)io;
 
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
@@ -37,11 +38,11 @@ int main(void)
                 running = false;
                 break;
             case SDL_EVENT_KEY_DOWN:
-                if (event.key.key == SDLK_Q)
+                if (event.key.scancode == SDL_SCANCODE_Q)
                     running = false;
-                else if (event.key.key == SDLK_D)
+                else if (event.key.scancode == SDL_SCANCODE_D)
                     dark_mode = !dark_mode;
-                else if (event.key.key == SDLK_V)
+                else if (event.key.scancode == SDL_SCANCODE_V)
                     vsync = !vsync;
                 break;
             }
@@ -71,9 +72,8 @@ int main(void)
             ImGui::EndMainMenuBar();
         }
 
-        dark_mode
-            ? SDL_SetRenderDrawColor(renderer, 0x24, 0x24, 0x24, 0xff)
-            : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
+        dark_mode ? SDL_SetRenderDrawColor(renderer, 0x24, 0x24, 0x24, 0xff)
+                  : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
         SDL_RenderClear(renderer);
         ImGui::Render();
         ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
