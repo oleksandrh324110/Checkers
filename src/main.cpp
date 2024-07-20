@@ -31,6 +31,7 @@ int main(void)
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
+            ImGui_ImplSDL3_ProcessEvent(&event);
             switch (event.type) {
             case SDL_EVENT_QUIT:
                 running = false;
@@ -40,11 +41,10 @@ int main(void)
                     running = false;
                 else if (event.key.key == SDLK_D)
                     dark_mode = !dark_mode;
-                else if (event.key.key = SDLK_V)
+                else if (event.key.key == SDLK_V)
                     vsync = !vsync;
                 break;
             }
-            ImGui_ImplSDL3_ProcessEvent(&event);
         }
 
         dark_mode ? ImGui::StyleColorsDark()
@@ -71,8 +71,9 @@ int main(void)
             ImGui::EndMainMenuBar();
         }
 
-        dark_mode ? SDL_SetRenderDrawColor(renderer, 0x24, 0x24, 0x24, 0xff)
-                  : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
+        dark_mode
+            ? SDL_SetRenderDrawColor(renderer, 0x24, 0x24, 0x24, 0xff)
+            : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
         SDL_RenderClear(renderer);
         ImGui::Render();
         ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
