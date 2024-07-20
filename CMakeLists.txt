@@ -15,8 +15,8 @@ add_subdirectory("lib/glm")
 
 file(GLOB IMGUI_SOURCES
   "lib/imgui/*.cpp"
-  "lib/imgui/backends/imgui_impl_sdl3.cpp"
-  "lib/imgui/backends/imgui_impl_sdlrenderer3.cpp"
+  "lib/imgui/backends/imgui_impl_sdl2.cpp"
+  "lib/imgui/backends/imgui_impl_sdlrenderer2.cpp"
 )
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PUBLIC "lib/imgui" "lib/SDL/include")
@@ -24,4 +24,4 @@ include_directories("lib/imgui" "lib/imgui/backends")
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 add_executable(main "${SOURCES}")
-target_link_libraries(main SDL3::SDL3 glm::glm imgui)
+target_link_libraries(main SDL2::SDL2 glm::glm imgui)

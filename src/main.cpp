@@ -2,13 +2,13 @@
 #include <iostream>
 #include <vector>
 
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-#include <SDL3/SDL_render.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_main.h>
+#include <SDL2/SDL_render.h>
 
 #include <imgui.h>
-#include <imgui_impl_sdl3.h>
-#include <imgui_impl_sdlrenderer3.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdlrenderer2.h>
 
 bool running = true;
 bool dark_mode = true;
@@ -18,52 +18,57 @@ int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    SDL_Window* window = SDL_CreateWindow("Hello SDL3!", 720, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, "opengl");
+    SDL_Window* window = SDL_CreateWindow("Hello SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 480, SDL_WINDOW_RESIZABLE);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
 
-    ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
-    ImGui_ImplSDLRenderer3_Init(renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer2_Init(renderer);
 
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            ImGui_ImplSDL3_ProcessEvent(&event);
+            ImGui_ImplSDL2_ProcessEvent(&event);
             switch (event.type) {
-            case SDL_EVENT_QUIT:
+            case SDL_QUIT:
                 running = false;
                 break;
-            case SDL_EVENT_KEY_DOWN:
-                if (event.key.scancode == SDL_SCANCODE_Q)
-                    running = false;
-                else if (event.key.scancode == SDL_SCANCODE_D)
-                    dark_mode = !dark_mode;
-                else if (event.key.scancode == SDL_SCANCODE_V)
-                    vsync = !vsync;
-                break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.mod & KMOD_ALT)
+                    switch (event.key.keysym.scancode) {
+                    case SDL_SCANCODE_D:
+                        dark_mode = !dark_mode;
+                        break;
+                    case SDL_SCANCODE_V:
+                        vsync = !vsync;
+                        break;
+                    case SDL_SCANCODE_Q:
+                        running = false;
+                        break;
+                    }
             }
         }
 
         dark_mode ? ImGui::StyleColorsDark()
                   : ImGui::StyleColorsLight();
 
-        SDL_SetRenderVSync(renderer, vsync);
+        SDL_RenderSetVSync(renderer, vsync);
 
-        ImGui_ImplSDL3_NewFrame();
-        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui_ImplSDLRenderer2_NewFrame();
         ImGui::NewFrame();
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("App")) {
-                if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "D"))
+                if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "Alt+D"))
                     dark_mode = !dark_mode;
-                if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "V"))
+                if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "Alt+V"))
                     vsync = !vsync;
-                if (ImGui::MenuItem("Exit", "Q"))
+                if (ImGui::MenuItem("Exit", "Alt+Q"))
                     running = false;
                 ImGui::EndMenu();
             }
@@ -76,12 +81,12 @@ int main(void)
                   : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
         SDL_RenderClear(renderer);
         ImGui::Render();
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
         SDL_RenderPresent(renderer);
     }
 
-    ImGui_ImplSDL3_Shutdown();
-    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui_ImplSDLRenderer2_Shutdown();
     ImGui::DestroyContext();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

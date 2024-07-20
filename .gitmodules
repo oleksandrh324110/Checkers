@@ -1,12 +1,12 @@
 [submodule "lib/SDL"]
 	path = lib/SDL
 	url = git@github.com:libsdl-org/SDL.git
-	ignore = all
+	branch = SDL2
 [submodule "lib/imgui"]
 	path = lib/imgui
 	url = git@github.com:ocornut/imgui.git
-	ignore = all
+	branch = master
 [submodule "lib/glm"]
 	path = lib/glm
 	url = git@github.com:g-truc/glm.git
-    ignore = all
+	branch = master
