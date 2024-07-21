@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <unordered_set>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -13,7 +14,7 @@
 bool dark_mode = true;
 bool vsync = true;
 
-void toggleColorStyle()
+void toggleDarkMode()
 {
     dark_mode = !dark_mode;
     dark_mode ? ImGui::StyleColorsDark()
@@ -26,17 +27,22 @@ void toggleVSync(SDL_Renderer* renderer)
     SDL_RenderSetVSync(renderer, vsync);
 }
 
-int main(int argc, char* argv[])
+int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    SDL_Window* window = SDL_CreateWindow("Hello SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 480, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Hello SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+
+    SDL_RenderSetVSync(renderer, vsync);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
+
+    dark_mode ? ImGui::StyleColorsDark()
+              : ImGui::StyleColorsLight();
 
     ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer2_Init(renderer);
@@ -50,19 +56,23 @@ int main(int argc, char* argv[])
             case SDL_QUIT:
                 running = false;
                 break;
+            case SDL_WINDOWEVENT:
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    SDL_SetWindowSize(window, std::max(event.window.data1, event.window.data2), std::max(event.window.data1, event.window.data2));
+                }
+                break;
             case SDL_KEYDOWN:
-                if (event.key.keysym.mod & KMOD_ALT)
-                    switch (event.key.keysym.scancode) {
-                    case SDL_SCANCODE_D:
-                        toggleColorStyle();
-                        break;
-                    case SDL_SCANCODE_V:
-                        toggleVSync(renderer);
-                        break;
-                    case SDL_SCANCODE_Q:
-                        running = false;
-                        break;
-                    }
+                switch (event.key.keysym.scancode) {
+                case SDL_SCANCODE_D:
+                    toggleDarkMode();
+                    break;
+                case SDL_SCANCODE_V:
+                    toggleVSync(renderer);
+                    break;
+                case SDL_SCANCODE_Q:
+                    running = false;
+                    break;
+                }
             }
         }
 
@@ -72,11 +82,11 @@ int main(int argc, char* argv[])
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("App")) {
-                if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "Alt+D"))
-                    toggleColorStyle();
-                if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "Alt+V"))
+                if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "D"))
+                    toggleDarkMode();
+                if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "V"))
                     toggleVSync(renderer);
-                if (ImGui::MenuItem("Exit", "Alt+Q"))
+                if (ImGui::MenuItem("Exit", "Q"))
                     running = false;
                 ImGui::EndMenu();
             }
