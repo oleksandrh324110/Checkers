@@ -11,6 +11,7 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
 
+int cell_size;
 bool dark_mode = true;
 bool vsync = true;
 
@@ -31,8 +32,10 @@ int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    SDL_Window* window = SDL_CreateWindow("Hello SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Hello SDL2!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720 + 19, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+
+    cell_size = 720 / 8;
 
     SDL_RenderSetVSync(renderer, vsync);
 
@@ -49,8 +52,7 @@ int main(void)
 
     bool running = true;
     while (running) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
+        for (SDL_Event event; SDL_PollEvent(&event);) {
             ImGui_ImplSDL2_ProcessEvent(&event);
             switch (event.type) {
             case SDL_QUIT:
@@ -58,7 +60,8 @@ int main(void)
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    SDL_SetWindowSize(window, std::max(event.window.data1, event.window.data2), std::max(event.window.data1, event.window.data2));
+                    cell_size = event.window.data1 / 8;
+                    SDL_SetWindowSize(window, cell_size * 8, cell_size * 8 + 19);
                 }
                 break;
             case SDL_KEYDOWN:
@@ -98,6 +101,15 @@ int main(void)
         dark_mode ? SDL_SetRenderDrawColor(renderer, 0x24, 0x24, 0x24, 0xff)
                   : SDL_SetRenderDrawColor(renderer, 0xdb, 0xdb, 0xdb, 0xff);
         SDL_RenderClear(renderer);
+
+        for (uint8_t i = 0; i < 8; i++) {
+            for (uint8_t j = (i + 1) % 2; j < 8; j += 2) {
+                SDL_Rect rect = { j * cell_size, i * cell_size + 19, cell_size, cell_size };
+                SDL_SetRenderDrawColor(renderer, 0xc3, 0x84, 0x26, 0xff);
+                SDL_RenderFillRect(renderer, &rect);
+            }
+        }
+
         ImGui::Render();
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
         SDL_RenderPresent(renderer);
