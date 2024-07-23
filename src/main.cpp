@@ -60,7 +60,7 @@ int main(void)
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    cell_size = event.window.data1 / 8;
+                    cell_size = std::max(50, event.window.data1 / 8);
                     SDL_SetWindowSize(window, cell_size * 8, cell_size * 8 + 19);
                 }
                 break;
@@ -85,7 +85,7 @@ int main(void)
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("App")) {
-                if (ImGui::MenuItem(dark_mode ? "Light mode" : "Dark mode", "D"))
+                if (ImGui::MenuItem(dark_mode ? "Light scheme" : "Dark scheme", "D"))
                     toggleDarkMode();
                 if (ImGui::MenuItem(vsync ? "Disable VSync" : "Enable VSync", "V"))
                     toggleVSync(renderer);
