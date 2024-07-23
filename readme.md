@@ -2,6 +2,8 @@
 
 ![Screenshot of the project](screenshots/1.png)
 
+# \*Currently in development
+
 ## Cloning the Repository
 
 To clone the repository with all submodules, use:
