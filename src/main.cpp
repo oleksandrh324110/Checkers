@@ -32,7 +32,7 @@ int main(void)
 {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    SDL_Window* window = SDL_CreateWindow("Chess", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720 + 19, SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Checkers", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 720, 720 + 19, SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
     cell_size = 720 / 8;

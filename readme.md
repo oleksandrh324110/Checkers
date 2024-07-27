@@ -1,4 +1,4 @@
-# Chess
+# Checkers
 
 ![Screenshot of the project](screenshots/1.png)
 
@@ -9,7 +9,7 @@
 To clone the repository with all submodules, use:
 
 ```bash
-git clone git@github.com:oleksandrh324110/Chess.git --recursive && cd Chess
+git clone git@github.com:oleksandrh324110/Checkers.git --recursive && cd Checkers
 ```
 
 If you forgot to use `--recursive`, you can initialize and update the submodules later:
